@@ -1,0 +1,57 @@
+# ~/.zshrc
+# Minimal zsh config for development
+
+# === AUTO-SWITCH TO ENGLISH IN TERMINAL ===
+# Install: brew tap daipeihust/tap && brew install im-select
+command -v im-select &>/dev/null && im-select com.apple.keylayout.ABC
+
+# === PATH ===
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/bin:$PATH"
+
+# Homebrew (Apple Silicon)
+if [[ -f "/opt/homebrew/bin/brew" ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+# === TAB COMPLETION ===
+autoload -Uz compinit && compinit
+autoload -U +X bashcompinit && bashcompinit
+
+# Better completion settings
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'  # case insensitive
+setopt AUTO_MENU
+setopt COMPLETE_IN_WORD
+
+# === HISTORY ===
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS
+
+# === ALIASES ===
+alias ll='ls -la'
+alias c='clear'
+alias ..='cd ..'
+alias ...='cd ../..'
+
+# Git aliases
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git log --oneline -20'
+alias gd='git diff'
+
+# === OPTIONAL: NVM (Node Version Manager) ===
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# === OPTIONAL: Cargo (Rust) ===
+# [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+
+# === OPTIONAL: pyenv (Python) ===
+# export PYENV_ROOT="$HOME/.pyenv"
+# command -v pyenv >/dev/null && eval "$(pyenv init -)"
