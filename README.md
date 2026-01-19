@@ -22,7 +22,7 @@ Minimal terminal setup optimized for working with Claude Code AI assistant.
 ## Quick Install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/dotfiles.git
+git clone https://github.com/fortunto2/dotfiles.git
 cd dotfiles
 ./scripts/install.sh
 ```
