@@ -1,7 +1,6 @@
 -- ~/.config/nvim/init.lua
--- Minimal Neovim setup: File tree + Git + Syntax highlighting
 
--- === BASIC SETTINGS ===
+-- === БАЗОВЫЕ НАСТРОЙКИ ===
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.tabstop = 2
@@ -31,10 +30,10 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- === PLUGINS ===
+-- === ПЛАГИНЫ ===
 require("lazy").setup({
 
-  -- Theme - Gruvbox (warm, no blue - better for eyes at night)
+  -- Theme - Gruvbox (warm, no blue - для глаз ночью)
   {
     "ellisonleao/gruvbox.nvim",
     priority = 1000,
@@ -48,11 +47,11 @@ require("lazy").setup({
     end,
   },
 
-  -- File tree
+  -- File tree (слева, всегда видно)
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
-    lazy = false,
+    lazy = false,  -- load immediately for Cmd+E from Kitty
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-tree/nvim-web-devicons",
@@ -68,16 +67,62 @@ require("lazy").setup({
         width = 30,
         mappings = {
           ["<space>"] = "none",
+          -- Single click opens file
+          ["<cr>"] = "open",
+          -- Copy path to clipboard
+          ["y"] = function(state)
+            local node = state.tree:get_node()
+            local path = node:get_id()
+            vim.fn.setreg("+", path)
+            vim.notify("Path copied: " .. path)
+          end,
+          -- Copy filename only
+          ["Y"] = function(state)
+            local node = state.tree:get_node()
+            local name = node.name
+            vim.fn.setreg("+", name)
+            vim.notify("Name copied: " .. name)
+          end,
+        },
+      },
+      -- Single click to open
+      event_handlers = {
+        {
+          event = "file_opened",
+          handler = function()
+            require("neo-tree.command").execute({ action = "close" })
+          end,
+        },
+        {
+          event = "neo_tree_buffer_enter",
+          handler = function()
+            vim.opt_local.signcolumn = "auto"
+          end,
         },
       },
     },
+    config = function(_, opts)
+      -- Single click opens file
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "neo-tree",
+        callback = function()
+          vim.keymap.set("n", "<LeftRelease>", function()
+            local node = require("neo-tree.sources.manager").get_state("filesystem").tree:get_node()
+            if node.type == "file" then
+              require("neo-tree.sources.filesystem.commands").open(require("neo-tree.sources.manager").get_state("filesystem"))
+            end
+          end, { buffer = true })
+        end,
+      })
+      require("neo-tree").setup(opts)
+    end,
     keys = {
       { "<leader>e", "<cmd>Neotree toggle<cr>", desc = "Toggle tree" },
       { "<leader>o", "<cmd>Neotree focus<cr>", desc = "Focus tree" },
     },
   },
 
-  -- Git signs in gutter
+  -- Git signs (изменения в gutter)
   {
     "lewis6991/gitsigns.nvim",
     opts = {
@@ -220,7 +265,7 @@ map("v", ">", ">gv")
 map("v", "J", ":m '>+1<cr>gv=gv", { desc = "Move down" })
 map("v", "K", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 
--- Open tree on directory
+-- Открыть дерево при старте если открыта директория
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     if vim.fn.argc() == 1 and vim.fn.isdirectory(vim.fn.argv(0)) == 1 then
