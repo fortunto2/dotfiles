@@ -1,7 +1,7 @@
 from kitty.fast_data_types import Screen
 from kitty.tab_bar import DrawData, ExtraData, TabBarData, as_rgb, draw_title
 
-HINTS = "⌘D:│ ⌘⇧D:─ ⌘W:close ⌘K:claude ⌘E:files ^Tab:switch │ nvim: y=path Y=name"
+HINTS = "⌘D:│ ⌘⇧D:─ ⌘W:close ⌘K:claude ^E/⌘E:files ^Tab:switch │ nvim: q=quit y=path"
 
 def draw_tab(
     draw_data: DrawData,
