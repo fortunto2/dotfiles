@@ -69,15 +69,27 @@ require("lazy").setup({
           ["<space>"] = "none",
           -- Single click opens file
           ["<cr>"] = "open",
-          -- Copy path to clipboard
+          -- Copy path to clipboard (English + Russian)
           ["y"] = function(state)
             local node = state.tree:get_node()
             local path = node:get_id()
             vim.fn.setreg("+", path)
             vim.notify("Path copied: " .. path)
           end,
-          -- Copy filename only
+          ["н"] = function(state)
+            local node = state.tree:get_node()
+            local path = node:get_id()
+            vim.fn.setreg("+", path)
+            vim.notify("Path copied: " .. path)
+          end,
+          -- Copy filename only (English + Russian)
           ["Y"] = function(state)
+            local node = state.tree:get_node()
+            local name = node.name
+            vim.fn.setreg("+", name)
+            vim.notify("Name copied: " .. name)
+          end,
+          ["Н"] = function(state)
             local node = state.tree:get_node()
             local name = node.name
             vim.fn.setreg("+", name)
@@ -253,8 +265,9 @@ map("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Prev buffer" })
 map("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "Delete buffer" })
 
--- Quick quit (nvim = preview mode)
+-- Quick quit (nvim = preview mode) - English + Russian
 map("n", "q", "<cmd>qa!<cr>", { desc = "Quit all" })
+map("n", "й", "<cmd>qa!<cr>", { desc = "Quit all (RU)" })
 map("n", "<C-c>", "<cmd>qa!<cr>", { desc = "Quit all" })
 
 -- Better indent
